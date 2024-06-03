@@ -42,7 +42,7 @@ export class Service{
                 config.appwriteCollectionId,
                 slug,
                 {
-                     title, content, imageurl, status
+                    title, content, imageurl, status
                 }
             )
 
@@ -54,11 +54,13 @@ export class Service{
   
     async deletePost({slug}) {
         try {
+            console.log('from deletepost',slug);
              return await this.databases.deleteDocument(
                 config.appwriteDatabaseId, 
                 config.appwriteCollectionId,
                 slug)
         } catch (error) {
+            console.log(error);
             console.log('Error while deleting post');
             return false;
         }
@@ -73,6 +75,7 @@ export class Service{
             )
         } catch (error) {
             console.log('Error while getting post');
+            console.log(error);
             return false;
         }
     }
@@ -106,13 +109,27 @@ export class Service{
         }
     }
 
-    getFilePreviewUrl(fileId){
+    async deleteFile(fileId){
+        try {
+            await this.storage.deleteFile(
+                config.appwriteBucketId,
+                fileId
+            )
+            return true
+        } catch (error) {
+            console.log("Appwrite serive :: deleteFile :: error", error);
+            return false
+        }
+    }
+
+    getFilePreview(fileId){
         try {
             return this.storage.getFilePreview(
                 config.appwriteBucketId,
                 fileId);
         } catch (error) {
             console.log('Error while getting file preview');
+            console.log(error);
             return false;
         }
     }
